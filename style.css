@@ -1,0 +1,63 @@
+/* Core Layout Settings */
+[x-cloak] { display: none !important; }
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    touch-action: pan-y; /* Memperhalus geseran, mengunci sumbu X agar tidak sensitif */
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Background Visuals */
+body {
+    background-color: #FDFCF0;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(29, 151, 108, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(255, 118, 25, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+.blob {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(135deg, rgba(29, 151, 108, 0.08) 0%, rgba(147, 249, 185, 0.08) 100%);
+    filter: blur(80px);
+    border-radius: 50%;
+    z-index: -1;
+    animation: move 20s infinite alternate;
+}
+
+@keyframes move {
+    from { transform: translate(-10%, -10%); }
+    to { transform: translate(20%, 20%); }
+}
+
+/* UI Elements */
+.organic-gradient { background: linear-gradient(135deg, #1D976C 0%, #93F9B9 100%); }
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain; /* Mengurangi sensitivitas tarik-menarik horizontal */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.social-icon { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Scrollbar Custom */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #FDFCF0; }
+::-webkit-scrollbar-thumb { background: #1D976C; border-radius: 10px; }
