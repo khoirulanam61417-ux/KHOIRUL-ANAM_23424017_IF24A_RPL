@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juragan Sayur | Premium Fresh Market</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Public+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-green': '#1D976C',
+                        'brand-orange': '#FF7619',
+                        'brand-cream': '#FDFCF0',
+                        'brand-dark': '#1A1D1A',
+                    },
+                    fontFamily: { 'heading': ['Unbounded'], 'body': ['Public Sans'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-brand-dark font-body" x-data="juraganApp()">
+
+    <div class="blob" style="top: -100px; left: -100px;"></div>
+    <div class="blob" style="bottom: -100px; right: -100px; animation-delay: -5s; background: rgba(255, 118, 25, 0.04);"></div>
+
+    <nav class="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-brand-green/5">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center text-nowrap">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 organic-gradient rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-leaf text-white text-sm"></i></div>
+                <span class="font-heading font-black text-sm md:text-lg tracking-tighter text-brand-green uppercase">Juragan Sayur</span>
+            </div>
+            <div class="hidden lg:flex gap-8 font-bold text-[10px] uppercase tracking-widest text-slate-500">
+                <a href="#home" class="hover:text-brand-green transition">Beranda</a>
+                <a href="#katalog" class="hover:text-brand-green transition">Katalog</a>
+                <a href="#galeri" class="hover:text-brand-green transition">Galeri</a>
+                <a href="#lokasi" class="hover:text-brand-green transition">Lokasi</a>
+            </div>
+            <button @click="showCart = true" class="relative p-3 bg-brand-dark text-white rounded-2xl hover:bg-brand-green transition-all shadow-lg active:scale-90">
+                <i class="fa-solid fa-cart-shopping text-xs"></i>
+                <span x-show="cart.length > 0" x-text="cart.reduce((s, i) => s + i.qty, 0)" class="absolute -top-2 -right-2 bg-brand-orange text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white font-bold"></span>
+            </button>
+        </div>
+    </nav>
+
+    <section id="home" class="py-16 md:py-24 container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6 text-center md:text-left">
+            <div class="inline-block px-4 py-1.5 bg-brand-green/10 text-brand-green rounded-full text-[10px] font-black uppercase tracking-widest mb-2">Pasar Rebo Market</div>
+            <h1 class="font-heading font-black text-4xl md:text-6xl leading-tight uppercase">Segar Dari <span class="text-brand-green">Lapak</span><br>Langsung Ke Dapur.</h1>
+            <p class="text-md md:text-lg text-slate-500 max-w-lg">Bantu orang tua jadi lebih modern! Sayuran segar kualitas premium pilihan tangan pertama setiap subuh.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <a href="#katalog" class="inline-block bg-brand-orange text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-brand-orange/20 hover:scale-105 active:scale-95 transition tracking-wider">MULAI BELANJA</a>
+                <a href="#lokasi" class="inline-block bg-white text-brand-dark px-10 py-4 rounded-2xl font-black border border-slate-200 hover:bg-slate-50 transition tracking-wider">CEK LOKASI</a>
+            </div>
+        </div>
+        <div class="relative hidden md:block">
+            <div class="absolute -inset-4 bg-brand-green/20 rounded-[4rem] blur-3xl"></div>
+            <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800" class="relative rounded-[3rem] shadow-2xl rotate-2 border-8 border-white object-cover h-[500px] w-full">
+        </div>
+    </section>
+
+    <section id="katalog" class="py-20 glass-card rounded-[3rem] md:rounded-[5rem] mx-4 md:mx-10 shadow-2xl mb-20 border border-white/50">
+        <div class="container mx-auto px-6 text-center mb-12">
+            <h2 class="font-heading font-black text-2xl md:text-4xl mb-8 uppercase tracking-tighter">Pilihan Hari Ini</h2>
+            <div class="flex justify-center gap-2 bg-white/50 p-1.5 rounded-2xl inline-flex border border-white overflow-x-auto max-w-full no-scrollbar">
+                <button @click="category = 'sayur'" :class="category === 'sayur' ? 'bg-brand-green text-white shadow-lg' : 'text-slate-400'" class="px-6 py-3 rounded-xl font-bold text-xs transition-all whitespace-nowrap uppercase">SAYURAN</button>
+                <button @click="category = 'bumbu'" :class="category === 'bumbu' ? 'bg-brand-green text-white shadow-lg' : 'text-slate-400'" class="px-6 py-3 rounded-xl font-bold text-xs transition-all whitespace-nowrap uppercase">BUMBU</button>
+                <button @click="category = 'paket'" :class="category === 'paket' ? 'bg-brand-green text-white shadow-lg' : 'text-slate-400'" class="px-6 py-3 rounded-xl font-bold text-xs transition-all whitespace-nowrap uppercase">HARGA PAKET</button>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            <template x-for="item in products.filter(p => p.type === category)" :key="item.id">
+                <div class="group bg-white/80 p-5 rounded-[2.5rem] border border-white hover:border-brand-green/30 transition-all shadow-sm hover:shadow-xl flex flex-col justify-between">
+                    <div class="rounded-3xl overflow-hidden aspect-square mb-5 bg-brand-cream relative">
+                        <img :src="item.image" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xs md:text-sm uppercase mb-1 tracking-tight" x-text="item.name"></h3>
+                        <p class="text-brand-green font-black text-base mb-5" x-text="formatCurrency(item.price)"></p>
+                    </div>
+                    <button @click="addToCart(item)" class="w-full bg-brand-dark text-white py-3.5 rounded-2xl font-black text-[10px] uppercase hover:bg-brand-green transition-all active:scale-95 shadow-lg shadow-brand-dark/10">TAMBAH +</button>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <section id="galeri" class="py-20 mb-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="font-heading font-black text-2xl md:text-3xl mb-12 uppercase italic tracking-tighter">Galeri Lapak Kami</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <template x-for="img in galleryImages" :key="img">
+                    <div @click="openLightbox(img)" class="cursor-pointer rounded-[2rem] overflow-hidden h-48 md:h-64 shadow-xl group border-4 border-white">
+                        <img :src="img" class="w-full h-full object-cover group-hover:scale-110 transition duration-1000">
+                    </div>
+                </template>
+            </div>
+        </div>
+    </section>
+
+    <section id="lokasi" class="py-20 container mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-8 items-stretch">
+            <div class="h-[400px] md:h-full min-h-[400px] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white relative">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26084.144930632974!2d112.7061906!3d-7.477477499999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e11fecd4b1fd%3A0x3a67d3a9b1dca8f0!2sToko%20Sri%20Handayani!5e1!3m2!1sid!2sid!4v1775478460146!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="space-y-6 p-10 glass-card rounded-[3rem] flex flex-col justify-center">
+                <h2 class="font-heading font-black text-3xl uppercase leading-none">Ayo Mampir<br><span class="text-brand-green">Juragan!</span></h2>
+                <div class="space-y-5 font-bold text-slate-600">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-brand-orange/10 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-map-pin text-brand-orange text-lg"></i></div>
+                        <p class="pt-2">Pasar Larangan, Blok A No.1<br><span class="text-xs text-slate-400">Samping Pos Keamanan</span></p>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-brand-green/10 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-clock text-brand-green text-lg"></i></div>
+                        <p class="pt-2">02.00 - 10.00 WIB<br><span class="text-xs text-slate-400">Buka Setiap Hari</span></p>
+                    </div>
+                </div>
+                <div class="pt-4 flex gap-3">
+                    <a href="https://wa.me/6285236401282" class="flex-1 text-center bg-brand-green text-white py-4 rounded-2xl font-black shadow-lg hover:bg-brand-dark transition-all uppercase text-xs">Chat WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="pt-24 pb-12 bg-brand-dark text-white rounded-t-[4rem] md:rounded-t-[5rem] relative overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-brand-green/50 to-transparent"></div>
+        <div class="container mx-auto px-6 text-center">
+            <div class="flex items-center justify-center gap-3 mb-12">
+                <div class="w-12 h-12 organic-gradient rounded-2xl flex items-center justify-center shadow-lg transform -rotate-6">
+                    <i class="fa-solid fa-leaf text-white text-xl"></i>
+                </div>
+                <div class="text-left">
+                    <span class="block font-heading font-black text-xl tracking-tighter uppercase leading-none text-white">Juragan Sayur.</span>
+                    <span class="text-[10px] font-bold text-brand-green tracking-[0.3em] uppercase">Larangan Market</span>
+                </div>
+            </div>
+            
+            <div class="flex justify-center gap-6 mb-16">
+                <a href="https://wa.me/6285236401282" target="_blank" 
+                   class="social-icon group w-16 h-16 bg-white/5 border border-white/10 rounded-[1.5rem] flex items-center justify-center text-2xl transition-all duration-300 hover:bg-[#25D366] hover:border-[#25D366] hover:shadow-[0_0_30px_rgba(37,211,102,0.4)] hover:-translate-y-2">
+                    <i class="fab fa-whatsapp group-hover:scale-110 transition-transform"></i>
+                </a>
+                <a href="https://instagram.com/@_kuaxi" target="_blank" 
+                   class="social-icon group w-16 h-16 bg-white/5 border border-white/10 rounded-[1.5rem] flex items-center justify-center text-2xl transition-all duration-300 hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7] hover:border-transparent hover:shadow-[0_0_30px_rgba(238,42,123,0.4)] hover:-translate-y-2">
+                    <i class="fab fa-instagram group-hover:scale-110 transition-transform"></i>
+                </a>
+                <a href="https://tiktok.com/@juragansayur694" target="_blank" 
+                   class="social-icon group w-16 h-16 bg-white/5 border border-white/10 rounded-[1.5rem] flex items-center justify-center text-2xl transition-all duration-300 hover:bg-white hover:text-black hover:border-white hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:-translate-y-2">
+                    <i class="fab fa-tiktok group-hover:scale-110 transition-transform"></i>
+                </a>
+            </div>
+
+            <div class="max-w-2xl mx-auto h-px bg-white/5 mb-8"></div>
+            <div class="space-y-2">
+                <p class="text-[10px] font-bold text-white/40 tracking-[0.5em] uppercase">
+                    © 2026 Developed by <span class="text-white">Khoirul Anam</span>
+                </p>
+                <p class="text-[9px] font-medium text-white/20 uppercase tracking-widest italic">
+                    Sistem Informasi Marketplace Sayur Tradisional - Informatics Project
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-[1000] bg-brand-dark/95 backdrop-blur-md flex items-center justify-center p-4" @click="lightboxOpen = false">
+        <img :src="activeImg" class="max-w-full max-h-[80vh] rounded-3xl shadow-2xl transition-transform duration-500 transform scale-100 border-4 border-white/20">
+    </div>
+
+    <div x-show="showCart" x-cloak class="fixed inset-0 z-[500]">
+        <div class="absolute inset-0 bg-brand-dark/60 backdrop-blur-sm" @click="showCart = false"></div>
+        <div class="fixed inset-y-0 right-0 max-w-md w-full bg-brand-cream/95 backdrop-blur-xl p-8 flex flex-col shadow-2xl transition-transform duration-500" 
+             x-show="showCart" x-transition:enter="translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="translate-x-full">
+             <div class="flex justify-between items-center mb-10">
+                <h2 class="font-heading font-black text-xl uppercase italic">Keranjang</h2>
+                <button @click="showCart = false" class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-400 hover:text-brand-orange transition-all"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto space-y-6 no-scrollbar">
+                <template x-for="item in cart" :key="item.id">
+                    <div class="flex gap-4 border-b border-black/5 pb-4">
+                        <img :src="item.image" class="w-20 h-20 rounded-2xl object-cover shadow-md border-2 border-white">
+                        <div class="flex-1">
+                            <h4 class="font-black text-[10px] uppercase tracking-tight" x-text="item.name"></h4>
+                            <p class="text-xs text-brand-green font-black mb-2" x-text="formatCurrency(item.price)"></p>
+                            <div class="flex items-center gap-4">
+                                <button @click="updateQty(item.id, -1)" class="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-black shadow-sm">-</button>
+                                <span x-text="item.qty" class="text-xs font-black"></span>
+                                <button @click="updateQty(item.id, 1)" class="w-8 h-8 bg-white rounded-lg flex items-center justify-center font-black shadow-sm">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="pt-8 border-t border-black/5 space-y-6">
+                <div class="flex justify-between font-heading font-black text-xl italic uppercase">
+                    <span>Total</span>
+                    <span x-text="formatCurrency(totalPrice())" class="text-brand-green"></span>
+                </div>
+                <button @click="checkout()" class="w-full bg-brand-green text-white py-5 rounded-[2rem] font-black shadow-xl shadow-brand-green/20 hover:bg-brand-dark transition tracking-widest uppercase text-xs">Pesan via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
